@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Message Vault - Unlock Positivity</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="images/vault-icon.png" alt="Vault Icon" class="vault-icon">
+                <h1>The Message Vault</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" id="nav-home">Home</a></li>
+                    <li><a href="#" id="nav-vault">My Vault</a></li>
+                    <li><a href="#" id="nav-premium" class="premium-btn">Go Premium</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home-section" class="active-section">
+                <div class="hero">
+                    <h2>Unlock Positivity with The Message Vault</h2>
+                    <p>Generate uplifting messages for yourself or friends. Save your favorites in your personal vault.</p>
+                </div>
+
+                <div class="message-generator">
+                    <form id="message-form">
+                        <div class="form-group">
+                            <label for="name">Your Name or Friend's Name</label>
+                            <input type="text" id="name" placeholder="e.g., Sarah" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="traits">Optional Traits or Interests (comma separated)</label>
+                            <input type="text" id="traits" placeholder="e.g., loves hiking, creative">
+                        </div>
+                        <div class="form-group">
+                            <label for="insecurities">Optional Insecurities (We'll address them positively)</label>
+                            <input type="text" id="insecurities" placeholder="e.g., public speaking">
+                        </div>
+                        <button type="submit" id="generate-btn">Generate Message</button>
+                    </form>
+
+                    <div class="message-display hidden" id="message-display">
+                        <div class="message-card">
+                            <p id="generated-message"></p>
+                            <div class="message-actions">
+                                <button id="regenerate-btn"><i class="fas fa-redo"></i> Generate Another</button>
+                                <button id="save-btn"><i class="fas fa-heart"></i> Save to Vault</button>
+                                <button id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
+                                <div class="share-dropdown">
+                                    <button id="share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                                    <div class="share-options hidden">
+                                        <a href="#" id="email-share"><i class="fas fa-envelope"></i> Email</a>
+                                        <a href="#" id="twitter-share"><i class="fab fa-twitter"></i> Twitter</a>
+                                        <a href="#" id="facebook-share"><i class="fab fa-facebook"></i> Facebook</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="daily-limit-notice" id="limit-notice">
+                    <p>Free users can generate up to 3 messages per day. <a href="#" id="upgrade-link">Upgrade to Premium</a> for unlimited messages!</p>
+                </div>
+            </section>
+
+            <!-- Vault Section -->
+            <section id="vault-section" class="hidden-section">
+                <h2>My Message Vault</h2>
+                <p>Your saved messages of positivity and encouragement.</p>
+                
+                <div class="vault-counter">
+                    <p>Saved Messages: <span id="saved-count">0</span>/10</p>
+                    <p class="free-limit-note">Free users can save up to 10 messages. <a href="#" class="upgrade-link">Upgrade</a> for unlimited storage!</p>
+                </div>
+                
+                <div class="vault-container" id="vault-container">
+                    <!-- Saved messages will appear here -->
+                    <div class="empty-vault-message" id="empty-vault">
+                        <p>Your vault is empty. Generate and save messages to see them here!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Premium Section -->
+            <section id="premium-section" class="hidden-section">
+                <h2>Upgrade to Premium</h2>
+                <p>Unlock all features and send unlimited positivity!</p>
+                
+                <div class="premium-features">
+                    <div class="price-tag">
+                        <h3>$5<span>/month</span></h3>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-check"></i> Unlimited daily messages for yourself and friends</li>
+                        <li><i class="fas fa-check"></i> Customize messages based on traits and insecurities</li>
+                        <li><i class="fas fa-check"></i> Schedule automated daily affirmations</li>
+                        <li><i class="fas fa-check"></i> Save unlimited messages in your vault</li>
+                        <li><i class="fas fa-check"></i> Track your emotional growth with vault analytics</li>
+                        <li><i class="fas fa-check"></i> Completely ad-free experience</li>
+                    </ul>
+                    
+                    <button id="premium-btn" class="premium-upgrade-btn">Upgrade Now</button>
+                    <p class="coming-soon-note">Premium features coming soon! This is a placeholder for future implementation.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 The Message Vault. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#" id="privacy-link">Privacy Policy</a>
+                <a href="#" id="terms-link">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacy-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Privacy Policy</h2>
+            <div class="modal-body">
+                <p>At The Message Vault, we value your privacy:</p>
+                <ul>
+                    <li>We don't store names, traits, or insecurities unless you save them in your vault (locally on your device).</li>
+                    <li>Premium features may store data with your consent, which will be securely encrypted.</li>
+                    <li>Your data is used only for generating messages, not shared or sold.</li>
+                    <li>For EU users: This site complies with GDPR regulations.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="terms-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Terms of Use</h2>
+            <div class="modal-body">
+                <p>By using The Message Vault, you agree to:</p>
+                <ul>
+                    <li>Use the service for personal, non-commercial purposes</li>
+                    <li>Not use the service to generate harmful or inappropriate content</li>
+                    <li>Respect the intellectual property rights of The Message Vault</li>
+                    <li>Accept that messages are AI-generated and for entertainment purposes only</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/message-generator.js"></script>
+    <script src="js/vault.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
