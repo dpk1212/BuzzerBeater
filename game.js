@@ -70,7 +70,7 @@ function updateLeaderboard(score, seed) {
   const entry = { score, seed, date: new Date().toLocaleDateString() };
   leaderboard.push(entry);
   leaderboard.sort((a, b) => b.score - a.score);
-  leaderboard = leaderboard.slice(0, 5); // Keep top 5
+  leaderboard = leaderboard.slice(0, 5);
   localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
 }
 
@@ -149,6 +149,8 @@ function nextShot() {
   document.getElementById("countdown").textContent = clock;
   isDirectionShown = false;
   hasPressed = false;
+
+  countdownStartSound.loop = true; // Loop the ticking sound
   countdownStartSound.play();
 
   const countdown = setInterval(() => {
@@ -157,6 +159,8 @@ function nextShot() {
       document.getElementById("countdown").textContent = clock;
     } else {
       clearInterval(countdown);
+      countdownStartSound.pause();
+      countdownStartSound.currentTime = 0; // Reset to start
       document.getElementById("countdown").style.display = "none";
       document.getElementById("direction").textContent = requiredDirection;
       document.getElementById("direction").style.display = "block";
@@ -213,89 +217,4 @@ function updateStats() {
 }
 
 function updateReactionTracker() {
-  const reactionList = document.getElementById("reactionList");
-  reactionList.innerHTML = "";
-  reactionTimes.forEach(({ attempt, result }) => {
-    const li = document.createElement("li");
-    li.textContent = `Shot ${attempt}: ${result}`;
-    reactionList.appendChild(li);
-  });
-
-  const successfulTimes = reactionTimes
-    .filter(r => r.result !== "Miss")
-    .map(r => parseInt(r.result));
-  const avgTime = successfulTimes.length > 0 ?
-    Math.round(successfulTimes.reduce((a, b) => a + b, 0) / successfulTimes.length) : "N/A";
-  document.getElementById("avgReaction").textContent = `Avg: ${avgTime === "N/A" ? "N/A" : avgTime + "ms"}`;
-}
-
-function showResultPage(won) {
-  clearInterval(clockInterval);
-  document.removeEventListener("keydown", handleKeyPress);
-
-  if (playerScore > highScore) {
-    highScore = playerScore;
-    localStorage.setItem('highScore', highScore);
-    document.getElementById("highScoreValue").textContent = highScore;
-    if (won) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-  }
-  updateLeaderboard(playerScore, playerSeed);
-  displayLeaderboard();
-
-  const made = reactionTimes.filter(r => r.result !== "Miss").length;
-  const missed = 12 - made;
-  const successfulTimes = reactionTimes
-    .filter(r => r.result !== "Miss")
-    .map(r => parseInt(r.result));
-  const avgTime = successfulTimes.length > 0 ?
-    Math.round(successfulTimes.reduce((a, b) => a + b, 0) / successfulTimes.length) : "N/A";
-  const fastest = successfulTimes.length > 0 ? Math.min(...successfulTimes) : "N/A";
-  const slowest = successfulTimes.length > 0 ? Math.max(...successfulTimes) : "N/A";
-
-  document.getElementById("resultStats").innerHTML = `
-    <p>${rounds[currentGame]}: ${won ? "Won" : "Lost"} (${playerScore}-${opponentScore})</p>
-    <p>Made: ${made} | Missed: ${missed}</p>
-    <p>Avg Reaction: ${avgTime === "N/A" ? "N/A" : avgTime + "ms"}</p>
-    <p>Fastest: ${fastest === "N/A" ? "N/A" : fastest + "ms"}</p>
-    <p>Slowest: ${slowest === "N/A" ? "N/A" : slowest + "ms"}</p>
-    <p>High Score: ${highScore}</p>
-  `;
-  document.getElementById("resultPage").style.display = "block";
-  document.getElementById("nextBtn").style.display = won && currentGame < rounds.length - 1 ? "inline-block" : "none";
-  if (won) gameWinSound.play();
-}
-
-document.getElementById("startBtn").addEventListener("click", startGame);
-document.getElementById("playBtn").addEventListener("click", beginGame);
-document.getElementById("skipBtn").addEventListener("click", beginGame);
-document.getElementById("nextBtn").addEventListener("click", () => {
-  document.getElementById("resultPage").style.display = "none";
-  currentGame++;
-  shotsLeft = 12;
-  playerScore = 0;
-  opponentScore = 0;
-  gameClock = 40 * 60;
-  reactionTimes = [];
-  opponentSeed = getOpponentSeed(playerSeed);
-  document.getElementById("gameRound").textContent = rounds[currentGame];
-  document.getElementById("playerSeedDisplay").textContent = `Seed ${playerSeed}`;
-  document.getElementById("opponentSeedDisplay").textContent = `Seed ${opponentSeed}`;
-  document.getElementById("gameClock").textContent = formatTime(gameClock);
-  document.getElementById("reactionList").innerHTML = "";
-  updateStats();
-  clockInterval = setInterval(() => {
-    gameClock--;
-    document.getElementById("gameClock").textContent = formatTime(gameClock);
-    if (gameClock <= 0 && shotsLeft > 0) showResultPage(false);
-  }, 1000);
-  document.addEventListener("keydown", handleKeyPress);
-  nextShot();
-});
-document.getElementById("exitBtn").addEventListener("click", () => {
-  window.location.reload();
-});
-document.getElementById("shareBtn").addEventListener("click", () => {
-  const text = `I scored ${playerScore} in Buzzer Beater Blitz! Can you beat my high score of ${highScore}? Play now!`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-});
-document.addEventListener("keydown", handleKeyPress);
+  const reactionList = document.getElementBySorry about that, something didn't go as planned. Please try again, and if you're still seeing this message, go ahead and restart the app.
