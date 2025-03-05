@@ -22,6 +22,15 @@ const scenarios = [
 ];
 
 function startGame() {
+  // Hide the start button
+  document.getElementById("startBtn").style.display = "none";
+  
+  // Show game elements
+  document.getElementById("timer").parentElement.style.display = "block";
+  document.getElementById("score").parentElement.style.display = "block";
+  document.getElementById("streak").parentElement.style.display = "block";
+
+  // Start the timer
   setInterval(() => {
     if (timeLeft > 0) {
       timeLeft--;
@@ -30,6 +39,8 @@ function startGame() {
       endGame();
     }
   }, 1000);
+
+  // Begin the first shot
   nextShot();
 }
 
@@ -95,5 +106,8 @@ function endGame() {
   document.getElementById("scenario").textContent = `Game Over! Score: ${score}, Longest Streak: ${streak}`;
 }
 
+// Add event listener to start button instead of auto-starting
+document.getElementById("startBtn").addEventListener("click", startGame);
+
+// Add key listener for gameplay
 document.addEventListener("keydown", handleKeyPress);
-document.getElementById("startBtn").addEventListener("click", startGame);;
