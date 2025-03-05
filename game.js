@@ -1,15 +1,16 @@
-let currentGame = 0; // 0-based index for rounds array
+let currentGame = 0;
 let shotsLeft = 12;
 let playerScore = 0;
 let opponentScore = 0;
 let streak = 0;
-let gameClock = 40 * 60; // 40 minutes in seconds
+let gameClock = 40 * 60;
 let isDirectionShown = false;
 let shotStartTime;
 let currentWindow;
 let requiredDirection;
 let hasPressed = false;
 let playerSeed;
+let opponentSeed;
 let reactionTimes = [];
 let clockInterval;
 
@@ -27,13 +28,10 @@ const keyMap = {
 };
 
 const baseScenarios = [
-  // Early game (40-20 min)
   { text: "Open layup", points: 1, baseWindow: 900, minTime: 20 * 60 },
   { text: "Mid-range jumper", points: 2, baseWindow: 700, minTime: 20 * 60 },
-  // Mid game (20-5 min)
   { text: "Contested mid-range shot", points: 2, baseWindow: 700, minTime: 5 * 60 },
   { text: "Quick three-pointer", points: 3, baseWindow: 500, minTime: 5 * 60 },
-  // Clutch (5-0 min)
   { text: "Deep three with time running out", points: 3, baseWindow: 500, minTime: 0 },
   { text: "Buzzer-beater from downtown", points: 3, baseWindow: 500, minTime: 0 }
 ];
@@ -51,6 +49,10 @@ function getScenarios(seed, timeLeft) {
     }));
 }
 
+function getOpponentSeed(playerSeed) {
+  return 17 - playerSeed; // Simple matchup: 1 vs 16, 2 vs 15, etc.
+}
+
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
@@ -59,6 +61,7 @@ function formatTime(seconds) {
 
 function startGame() {
   playerSeed = parseInt(document.getElementById("seedSelect").value);
+  opponentSeed = getOpponentSeed(playerSeed);
   currentGame = 0;
 
   const landingPage = document.getElementById("landingPage");
@@ -73,6 +76,8 @@ function startGame() {
   }, 500);
 
   document.getElementById("gameRound").textContent = rounds[currentGame];
+  document.getElementById("playerSeedDisplay").textContent = `Seed ${playerSeed}`;
+  document.getElementById("opponentSeedDisplay").textContent = `Seed ${opponentSeed}`;
   document.getElementById("gameClock").textContent = formatTime(gameClock);
   updateStats();
 
@@ -81,7 +86,7 @@ function startGame() {
     document.getElementById("gameClock").textContent = formatTime(gameClock);
     if (gameClock <= 0) {
       clearInterval(clockInterval);
-      if (shotsLeft > 0) endGame(false); // Ran out of time
+      if (shotsLeft > 0) showResultPage(false);
     }
   }, 1000);
 
@@ -91,26 +96,8 @@ function startGame() {
 function nextShot() {
   const scenarios = getScenarios(playerSeed, gameClock);
   if (shotsLeft <= 0 || gameClock <= 0) {
-    if (playerScore > opponentScore) {
-      if (currentGame < rounds.length - 1) {
-        currentGame++;
-        shotsLeft = 12;
-        playerScore = 0;
-        opponentScore = 0;
-        gameClock = 40 * 60;
-        reactionTimes = [];
-        document.getElementById("reactionList").innerHTML = "";
-        document.getElementById("gameRound").textContent = rounds[currentGame];
-        document.getElementById("gameClock").textContent = formatTime(gameClock);
-        updateStats();
-      } else {
-        endGame(true);
-        return;
-      }
-    } else {
-      endGame(false);
-      return;
-    }
+    showResultPage(playerScore > opponentScore);
+    return;
   }
 
   const totalWeight = scenarios.reduce((sum, s) => sum + s.weight, 0);
@@ -163,7 +150,8 @@ function handleKeyPress(event) {
     resultEl.style.color = "#28a745";
     attemptResult = `${reactionTime}ms`;
   } else {
-    opponentScore += Math.floor(Math.random() * 2) + 1;
+    const reactionPercentage = reactionTime / currentWindow;
+    opponentScore += (opponentSeed <= 4 && reactionPercentage > 0.75) ? 2 : 1; // Higher seeds score more on slow misses
     resultEl.textContent = pressedKey !== requiredDirection ? "Missed! (Wrong direction)" : "Missed! (Too late)";
     resultEl.style.color = "#dc3545";
     streak = 0;
@@ -205,13 +193,56 @@ function updateReactionTracker() {
   document.getElementById("avgReaction").textContent = `Avg: ${avgTime === "N/A" ? "N/A" : avgTime + "ms"}`;
 }
 
-function endGame(won = false) {
+function showResultPage(won) {
   clearInterval(clockInterval);
   document.removeEventListener("keydown", handleKeyPress);
-  document.getElementById("scenario").textContent = won ?
-    `Champion! Seed ${playerSeed} - Final Score: ${playerScore}-${opponentScore}, Longest Streak: ${streak}` :
-    `Game Over! Seed ${playerSeed} - Lost in ${rounds[currentGame]} (${playerScore}-${opponentScore})`;
+
+  const made = reactionTimes.filter(r => r.result !== "Miss").length;
+  const missed = 12 - made;
+  const successfulTimes = reactionTimes
+    .filter(r => r.result !== "Miss")
+    .map(r => parseInt(r.result));
+  const avgTime = successfulTimes.length > 0 ?
+    Math.round(successfulTimes.reduce((a, b) => a + b, 0) / successfulTimes.length) : "N/A";
+  const fastest = successfulTimes.length > 0 ? Math.min(...successfulTimes) : "N/A";
+  const slowest = successfulTimes.length > 0 ? Math.max(...successfulTimes) : "N/A";
+
+  document.getElementById("resultStats").innerHTML = `
+    <p>${rounds[currentGame]}: ${won ? "Won" : "Lost"} (${playerScore}-${opponentScore})</p>
+    <p>Made: ${made} | Missed: ${missed}</p>
+    <p>Avg Reaction: ${avgTime === "N/A" ? "N/A" : avgTime + "ms"}</p>
+    <p>Fastest: ${fastest === "N/A" ? "N/A" : fastest + "ms"}</p>
+    <p>Slowest: ${slowest === "N/A" ? "N/A" : slowest + "ms"}</p>
+  `;
+  document.getElementById("resultPage").style.display = "block";
+  document.getElementById("nextBtn").style.display = won && currentGame < rounds.length - 1 ? "inline-block" : "none";
 }
 
 document.getElementById("startBtn").addEventListener("click", startGame);
+document.getElementById("nextBtn").addEventListener("click", () => {
+  document.getElementById("resultPage").style.display = "none";
+  currentGame++;
+  shotsLeft = 12;
+  playerScore = 0;
+  opponentScore = 0;
+  gameClock = 40 * 60;
+  reactionTimes = [];
+  opponentSeed = getOpponentSeed(playerSeed); // New matchup each game
+  document.getElementById("gameRound").textContent = rounds[currentGame];
+  document.getElementById("playerSeedDisplay").textContent = `Seed ${playerSeed}`;
+  document.getElementById("opponentSeedDisplay").textContent = `Seed ${opponentSeed}`;
+  document.getElementById("gameClock").textContent = formatTime(gameClock);
+  document.getElementById("reactionList").innerHTML = "";
+  updateStats();
+  clockInterval = setInterval(() => {
+    gameClock--;
+    document.getElementById("gameClock").textContent = formatTime(gameClock);
+    if (gameClock <= 0 && shotsLeft > 0) showResultPage(false);
+  }, 1000);
+  document.addEventListener("keydown", handleKeyPress);
+  nextShot();
+});
+document.getElementById("exitBtn").addEventListener("click", () => {
+  window.location.reload(); // Simple exit to restart
+});
 document.addEventListener("keydown", handleKeyPress);
