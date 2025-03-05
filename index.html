@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buzzer Beater Blitz</title>
   <style>
-    body { text-align: center; font-family: Arial; }
-    #scenario { font-size: 24px; font-weight: bold; }
-    #shootPrompt { font-size: 36px; color: red; display: none; }
-    #result { font-size: 20px; }
-    #shootBtn { padding: 20px; font-size: 18px; cursor: pointer; }
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    #timer, #score, #streak {
+      font-size: 24px;
+      margin: 10px;
+    }
+    #scenario {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px;
+    }
+    #direction {
+      font-size: 48px;
+      color: red;
+      display: none;
+    }
+    #result {
+      font-size: 24px;
+      margin: 20px;
+    }
   </style>
 </head>
 <body>
@@ -15,9 +35,8 @@
   <div>Score: <span id="score">0</span></div>
   <div>Streak: <span id="streak">0</span></div>
   <div id="scenario">Get ready...</div>
-  <div id="shootPrompt">Shoot!</div>
+  <div id="direction"></div>
   <div id="result"></div>
-  <button id="shootBtn" onclick="shoot()">Shoot</button>
   <script src="game.js"></script>
 </body>
 </html>
