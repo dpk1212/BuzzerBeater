@@ -50,7 +50,7 @@ function getScenarios(seed, timeLeft) {
 }
 
 function getOpponentSeed(playerSeed) {
-  return 17 - playerSeed; // Simple matchup: 1 vs 16, 2 vs 15, etc.
+  return 17 - playerSeed;
 }
 
 function formatTime(seconds) {
@@ -151,7 +151,7 @@ function handleKeyPress(event) {
     attemptResult = `${reactionTime}ms`;
   } else {
     const reactionPercentage = reactionTime / currentWindow;
-    opponentScore += (opponentSeed <= 4 && reactionPercentage > 0.75) ? 2 : 1; // Higher seeds score more on slow misses
+    opponentScore += (opponentSeed <= 4 && reactionPercentage > 0.75) ? 2 : 1;
     resultEl.textContent = pressedKey !== requiredDirection ? "Missed! (Wrong direction)" : "Missed! (Too late)";
     resultEl.style.color = "#dc3545";
     streak = 0;
@@ -227,7 +227,7 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   opponentScore = 0;
   gameClock = 40 * 60;
   reactionTimes = [];
-  opponentSeed = getOpponentSeed(playerSeed); // New matchup each game
+  opponentSeed = getOpponentSeed(playerSeed);
   document.getElementById("gameRound").textContent = rounds[currentGame];
   document.getElementById("playerSeedDisplay").textContent = `Seed ${playerSeed}`;
   document.getElementById("opponentSeedDisplay").textContent = `Seed ${opponentSeed}`;
@@ -243,6 +243,6 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   nextShot();
 });
 document.getElementById("exitBtn").addEventListener("click", () => {
-  window.location.reload(); // Simple exit to restart
+  window.location.reload();
 });
 document.addEventListener("keydown", handleKeyPress);
