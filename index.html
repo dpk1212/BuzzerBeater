@@ -9,11 +9,48 @@
       text-align: center;
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
+      margin: 0;
+    }
+    #landingPage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #ff8c00; /* Basketball orange */
+      color: white;
+    }
+    #landingPage h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    #landingPage p {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    #seedSelect {
+      font-size: 18px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    #startBtn {
+      font-size: 24px;
+      padding: 15px 30px;
+      background-color: #000;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #startBtn:hover {
+      background-color: #333;
+    }
+    #gameScreen {
+      display: none;
+      padding: 20px;
     }
     #timer, #score, #streak {
       font-size: 24px;
       margin: 10px;
-      display: none; /* Hidden until game starts */
     }
     #scenario {
       font-size: 28px;
@@ -29,22 +66,42 @@
       font-size: 24px;
       margin: 20px;
     }
-    #startBtn {
-      font-size: 24px;
-      padding: 10px 20px;
-      margin-top: 50px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <div>Time Left: <span id="timer">60</span>s</div>
-  <div>Score: <span id="score">0</span></div>
-  <div>Streak: <span id="streak">0</span></div>
-  <div id="scenario">Get ready...</div>
-  <div id="direction"></div>
-  <div id="result"></div>
-  <button id="startBtn">Start Game</button>
+  <div id="landingPage">
+    <h1>Welcome to Buzzer Beater Blitz!</h1>
+    <p>Test your clutch skills in a March Madness-inspired challenge.</p>
+    <label for="seedSelect">Pick Your Seed (1 = Easy, 16 = Hard):</label>
+    <select id="seedSelect">
+      <option value="1">Seed 1</option>
+      <option value="2">Seed 2</option>
+      <option value="3">Seed 3</option>
+      <option value="4">Seed 4</option>
+      <option value="5">Seed 5</option>
+      <option value="6">Seed 6</option>
+      <option value="7">Seed 7</option>
+      <option value="8">Seed 8</option>
+      <option value="9">Seed 9</option>
+      <option value="10">Seed 10</option>
+      <option value="11">Seed 11</option>
+      <option value="12">Seed 12</option>
+      <option value="13">Seed 13</option>
+      <option value="14">Seed 14</option>
+      <option value="15">Seed 15</option>
+      <option value="16">Seed 16</option>
+    </select>
+    <button id="startBtn">Start Game</button>
+  </div>
+  <div id="gameScreen">
+    <div>Time Left: <span id="timer">60</span>s</div>
+    <div>Score: <span id="score">0</span></div>
+    <div>Streak: <span id="streak">0</span></div>
+    <div>Seed: <span id="seedDisplay"></span></div>
+    <div id="scenario">Get ready...</div>
+    <div id="direction"></div>
+    <div id="result"></div>
+  </div>
   <script src="game.js"></script>
 </body>
 </html>
