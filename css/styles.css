@@ -1,38 +1,59 @@
-// 🏆 Header Shrinking Effect on Scroll
-window.addEventListener('scroll', function() {
-    if (window.scrollY > 50) {
-        document.querySelector('header').classList.add('scrolled');
-    } else {
-        document.querySelector('header').classList.remove('scrolled');
-    }
-});
+/* 🌎 Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease-in-out;
+}
 
-// 🌀 Smooth Section Transitions
-document.addEventListener("DOMContentLoaded", function() {
-    const sections = document.querySelectorAll("section");
+body {
+    background: linear-gradient(to bottom, #e6f7ff, #f0f8ff);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-    sections.forEach(section => {
-        if (!section.classList.contains("active-section")) {
-            section.classList.add("hidden-section");
-        }
-    });
+/* 🔷 Header */
+header {
+    background: #fff;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
 
-    function showSection(section) {
-        sections.forEach(s => s.classList.add("hidden-section"));
-        section.classList.remove("hidden-section");
-        section.classList.add("active-section");
-    }
+header.scrolled {
+    padding: 10px 0;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
 
-    document.getElementById("nav-home").addEventListener("click", function() {
-        showSection(document.getElementById("home-section"));
-    });
+/* 🔥 Navigation */
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 
-    document.getElementById("nav-vault").addEventListener("click", function() {
-        showSection(document.getElementById("vault-section"));
-    });
+nav a {
+    text-decoration: none;
+    color: #1a5276;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
 
-    document.getElementById("nav-premium").addEventListener("click", function() {
-        showSection(document.getElementById("premium-section"));
-    });
-});
+nav a:hover, nav a.active {
+    color: #f39c12;
+    background: rgba(255, 204, 128, 0.2);
+}
+
+/* 🎭 Hero Section */
+.hero {
 
