@@ -96,4 +96,4 @@ function endGame() {
 }
 
 document.addEventListener("keydown", handleKeyPress);
-startGame();
+document.getElementById("startBtn").addEventListener("click", startGame);;
