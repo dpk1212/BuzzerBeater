@@ -26,7 +26,7 @@ const baseScenarios = [
 ];
 
 function getScenarios(seed) {
-  const difficultyFactor = (seed - 1) / 15; // 0 (Seed 1) to 1 (Seed 16)
+  const difficultyFactor = (seed - 1) / 15;
   return baseScenarios.map(scenario => ({
     ...scenario,
     window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.5)),
@@ -40,10 +40,18 @@ function startGame() {
   playerSeed = parseInt(document.getElementById("seedSelect").value);
   const scenarios = getScenarios(playerSeed);
 
-  document.getElementById("landingPage").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
-  document.getElementById("reactionTracker").style.display = "block"; // Show tracker now
+  const landingPage = document.getElementById("landingPage");
+  const gameContainer = document.getElementById("gameContainer");
 
+  landingPage.classList.add("hidden");
+  setTimeout(() => {
+    landingPage.style.display = "none";
+    gameContainer.style.display = "flex";
+    document.getElementById("reactionTracker").style.display = "block";
+    gameContainer.classList.add("visible");
+  }, 500); // Match transition duration
+
+  document.getElementById("seedDisplay").textContent = playerSeed;
   updateStats();
   nextShot(scenarios);
 }
@@ -60,11 +68,11 @@ function nextShot(scenarios) {
         document.getElementById("reactionList").innerHTML = "";
         updateStats();
       } else {
-        endGame(true); // Win tournament
+        endGame(true);
         return;
       }
     } else {
-      endGame(false); // Lose game
+      endGame(false);
       return;
     }
   }
@@ -81,7 +89,7 @@ function nextShot(scenarios) {
   }
 
   currentWindow = scenario.window;
-  let clock = Math.floor(Math.random() * 2) + 1; // 1-3s countdown
+  let clock = Math.floor(Math.random() * 2) + 1; // 1-3s
   document.getElementById("scenario").textContent = `${scenario.text} ${clock}...`;
   isDirectionShown = false;
   hasPressed = false;
@@ -116,12 +124,12 @@ function handleKeyPress(event) {
     playerScore += scenario.points;
     streak++;
     resultEl.textContent = "Made it!";
-    resultEl.style.color = "green";
+    resultEl.style.color = "#28a745"; // Green
     attemptResult = `${reactionTime}ms`;
   } else {
-    opponentScore += Math.floor(Math.random() * 2) + 1; // Opponent scores 1 or 2
+    opponentScore += Math.floor(Math.random() * 2) + 1;
     resultEl.textContent = pressedKey !== requiredDirection ? "Missed! (Wrong direction)" : "Missed! (Too late)";
-    resultEl.style.color = "red";
+    resultEl.style.color = "#dc3545"; // Red
     streak = 0;
     attemptResult = "Miss";
   }
