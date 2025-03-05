@@ -44,7 +44,15 @@
     }
     #landingPage p {
       font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #howToPlay {
+      font-size: 1.2rem;
+      max-width: 600px;
       margin-bottom: 2rem;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1rem;
+      border-radius: 5px;
     }
     #seedSelect {
       font-size: 1.2rem;
@@ -89,6 +97,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       margin: 2rem;
+      position: relative;
     }
     #scoreboard {
       display: flex;
@@ -116,23 +125,29 @@
       color: #ff6200;
       font-size: 2rem;
     }
+    #playBox {
+      background: #f9f9f9;
+      border: 3px solid #ff6200;
+      border-radius: 10px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
     #scenario {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       color: #000;
-      margin: 1.5rem 0;
-      text-align: center;
+      margin-bottom: 1rem;
     }
     #direction {
-      font-size: 4rem;
+      font-size: 6rem;
       color: #ff6200;
       display: none;
-      text-align: center;
     }
     #result {
       font-size: 1.5rem;
-      margin: 1.5rem 0;
-      text-align: center;
+      margin-top: 1rem;
       font-weight: 700;
     }
     #reactionTracker {
@@ -164,6 +179,54 @@
       font-weight: 700;
       margin-top: 1rem;
     }
+    #resultPage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      z-index: 10;
+    }
+    #resultPage h2 {
+      font-size: 2rem;
+      color: #ff6200;
+      margin-bottom: 1rem;
+    }
+    #resultStats {
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+    #nextBtn, #exitBtn {
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      margin: 0 0.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #nextBtn {
+      background: #ff6200;
+      color: #fff;
+    }
+    #nextBtn:hover {
+      background: #e65100;
+    }
+    #exitBtn {
+      background: #333;
+      color: #fff;
+    }
+    #exitBtn:hover {
+      background: #555;
+    }
     @media (max-width: 768px) {
       #gameContainer {
         flex-direction: column;
@@ -180,6 +243,9 @@
       #scoreboard .scores span {
         font-size: 1.5rem;
       }
+      #direction {
+        font-size: 4rem;
+      }
     }
   </style>
 </head>
@@ -187,6 +253,9 @@
   <div id="landingPage">
     <h1>Welcome to Buzzer Beater Blitz!</h1>
     <p>Test your clutch skills in a March Madness-inspired challenge.</p>
+    <div id="howToPlay">
+      <strong>How to Play:</strong> Select your seed (1–16) and face off against an opponent in a 7-game tournament. Each game has a 40-minute clock and 12 shots. Press the arrow key matching the direction shown within the time limit to score. Beat your opponent in each round to become the champion!
+    </div>
     <label for="seedSelect">Pick Your Seed (1 = Easy, 16 = Hard):</label>
     <select id="seedSelect">
       <option value="1">Seed 1</option>
@@ -213,20 +282,28 @@
       <div id="scoreboard">
         <div class="round">Round: <span id="gameRound">Round of 64</span></div>
         <div class="scores">
-          <div>Player: <span id="playerScore">0</span></div>
-          <div>Opponent: <span id="opponentScore">0</span></div>
+          <div><span id="playerSeedDisplay"></span>: <span id="playerScore">0</span></div>
+          <div><span id="opponentSeedDisplay"></span>: <span id="opponentScore">0</span></div>
         </div>
         <div>Time: <span id="gameClock">40:00</span> | Shots Left: <span id="shotsLeft">12</span></div>
       </div>
-      <div id="scenario">Get ready...</div>
-      <div id="direction"></div>
-      <div id="result"></div>
+      <div id="playBox">
+        <div id="scenario">Get ready...</div>
+        <div id="direction"></div>
+        <div id="result"></div>
+      </div>
     </div>
     <div id="reactionTracker">
       <h3>Reaction Times</h3>
       <ul id="reactionList"></ul>
       <div id="avgReaction">Avg: N/A</div>
     </div>
+  </div>
+  <div id="resultPage">
+    <h2>Game Result</h2>
+    <div id="resultStats"></div>
+    <button id="nextBtn">Next Game</button>
+    <button id="exitBtn">Exit</button>
   </div>
   <script src="game.js"></script>
 </body>
