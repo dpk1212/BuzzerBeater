@@ -14,6 +14,7 @@ let opponentSeed;
 let reactionTimes = [];
 let clockInterval;
 let highScore = localStorage.getItem('highScore') || 0;
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
 const rounds = [
   "Round of 64", "Round of 32", "Sweet Sixteen", "Elite Eight", 
@@ -37,6 +38,11 @@ const baseScenarios = [
   { text: "Buzzer-beater from downtown", points: 3, baseWindow: 600, minTime: 0 }
 ];
 
+const shotMadeSound = document.getElementById("shotMadeSound");
+const shotMissedSound = document.getElementById("shotMissedSound");
+const countdownStartSound = document.getElementById("countdownStartSound");
+const gameWinSound = document.getElementById("gameWinSound");
+
 function getScenarios(seed, timeLeft) {
   const difficultyFactor = (seed - 1) / 15;
   return baseScenarios
@@ -58,6 +64,24 @@ function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+}
+
+function updateLeaderboard(score, seed) {
+  const entry = { score, seed, date: new Date().toLocaleDateString() };
+  leaderboard.push(entry);
+  leaderboard.sort((a, b) => b.score - a.score);
+  leaderboard = leaderboard.slice(0, 5); // Keep top 5
+  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+}
+
+function displayLeaderboard() {
+  const tbody = document.querySelector("#leaderboardTable tbody");
+  tbody.innerHTML = "";
+  leaderboard.forEach((entry, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${index + 1}</td><td>${entry.seed}</td><td>${entry.score}</td><td>${entry.date}</td>`;
+    tbody.appendChild(tr);
+  });
 }
 
 function startGame() {
@@ -125,6 +149,7 @@ function nextShot() {
   document.getElementById("countdown").textContent = clock;
   isDirectionShown = false;
   hasPressed = false;
+  countdownStartSound.play();
 
   const countdown = setInterval(() => {
     clock--;
@@ -158,6 +183,7 @@ function handleKeyPress(event) {
     resultEl.textContent = "Made it!";
     resultEl.style.color = "#28a745";
     attemptResult = `${reactionTime}ms`;
+    shotMadeSound.play();
   } else {
     const reactionPercentage = reactionTime / currentWindow;
     opponentScore += (opponentSeed <= 4 && reactionPercentage > 0.75) ? 2 : 1;
@@ -165,6 +191,7 @@ function handleKeyPress(event) {
     resultEl.style.color = "#dc3545";
     streak = 0;
     attemptResult = "Miss";
+    shotMissedSound.play();
   }
 
   reactionTimes.push({ attempt: 13 - shotsLeft, result: attemptResult });
@@ -212,6 +239,8 @@ function showResultPage(won) {
     document.getElementById("highScoreValue").textContent = highScore;
     if (won) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   }
+  updateLeaderboard(playerScore, playerSeed);
+  displayLeaderboard();
 
   const made = reactionTimes.filter(r => r.result !== "Miss").length;
   const missed = 12 - made;
@@ -233,6 +262,7 @@ function showResultPage(won) {
   `;
   document.getElementById("resultPage").style.display = "block";
   document.getElementById("nextBtn").style.display = won && currentGame < rounds.length - 1 ? "inline-block" : "none";
+  if (won) gameWinSound.play();
 }
 
 document.getElementById("startBtn").addEventListener("click", startGame);
