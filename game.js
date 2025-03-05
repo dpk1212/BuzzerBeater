@@ -1,4 +1,5 @@
-let timeLeft = 60;
+let currentGame = 1;
+let shotsLeft = 12;
 let score = 0;
 let streak = 0;
 let isDirectionShown = false;
@@ -7,6 +8,7 @@ let currentWindow;
 let requiredDirection;
 let hasPressed = false;
 let playerSeed;
+let reactionTimes = [];
 
 const directions = ['↑', '↓', '←', '→'];
 const keyMap = {
@@ -16,52 +18,50 @@ const keyMap = {
   'ArrowRight': '→'
 };
 
-// Adjust difficulty based on seed (1 = easiest, 16 = hardest)
 const baseScenarios = [
-  { text: "Open layup to win!", points: 1, baseWindow: 900 }, // Easy
-  { text: "Mid-range jumper with a defender!", points: 2, baseWindow: 700 }, // Medium
-  { text: "Deep three to beat the buzzer!", points: 3, baseWindow: 500 } // Hard
+  { text: "Open layup to win!", points: 1, baseWindow: 900 },
+  { text: "Mid-range jumper with a defender!", points: 2, baseWindow: 700 },
+  { text: "Deep three to beat the buzzer!", points: 3, baseWindow: 500 }
 ];
 
-// Function to adjust scenarios based on seed
 function getScenarios(seed) {
   const difficultyFactor = (seed - 1) / 15; // 0 (Seed 1) to 1 (Seed 16)
   return baseScenarios.map(scenario => ({
     ...scenario,
-    window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.5)), // Reduce window as seed increases
-    weight: scenario.points === 1 ? (1 - difficultyFactor) : // More easy shots for low seeds
+    window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.5)),
+    weight: scenario.points === 1 ? (1 - difficultyFactor) :
             scenario.points === 2 ? 1 :
-            difficultyFactor // More hard shots for high seeds
+            difficultyFactor
   }));
 }
 
 function startGame() {
-  // Get selected seed
   playerSeed = parseInt(document.getElementById("seedSelect").value);
   const scenarios = getScenarios(playerSeed);
 
-  // Hide landing page, show game screen
   document.getElementById("landingPage").style.display = "none";
   document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("reactionTracker").style.display = "block";
   document.getElementById("seedDisplay").textContent = playerSeed;
 
-  // Start the timer
-  setInterval(() => {
-    if (timeLeft > 0) {
-      timeLeft--;
-      document.getElementById("timer").textContent = timeLeft;
-    } else {
-      endGame();
-    }
-  }, 1000);
-
+  updateStats();
   nextShot(scenarios);
 }
 
 function nextShot(scenarios) {
-  if (timeLeft <= 0) return;
+  if (shotsLeft <= 0) {
+    if (currentGame < 6) {
+      currentGame++;
+      shotsLeft = 12;
+      reactionTimes = []; // Reset reaction times for new game
+      document.getElementById("reactionList").innerHTML = "";
+      updateStats();
+    } else {
+      endGame(true); // Win condition
+      return;
+    }
+  }
 
-  // Weighted random selection based on difficulty
   const totalWeight = scenarios.reduce((sum, s) => sum + s.weight, 0);
   let r = Math.random() * totalWeight;
   let scenario;
@@ -74,7 +74,7 @@ function nextShot(scenarios) {
   }
 
   currentWindow = scenario.window;
-  let clock = Math.floor(Math.random() * 4) + 3; // 3-6s countdown
+  let clock = Math.floor(Math.random() * 4) + 3;
   document.getElementById("scenario").textContent = `${scenario.text} ${clock}...`;
   isDirectionShown = false;
   hasPressed = false;
@@ -104,20 +104,25 @@ function handleKeyPress(event) {
   const scenarios = getScenarios(playerSeed);
   const scenario = scenarios.find(s => s.text === currentScenarioText);
 
+  let attemptResult;
   if (pressedKey === requiredDirection && reactionTime <= currentWindow) {
     score += scenario.points;
     streak++;
     resultEl.textContent = "Made it!";
     resultEl.style.color = "green";
-  } else if (pressedKey !== requiredDirection) {
-    resultEl.textContent = "Missed! (Wrong direction)";
-    resultEl.style.color = "red";
-    streak = 0;
+    attemptResult = `${reactionTime}ms`;
   } else {
-    resultEl.textContent = "Missed! (Too late)";
+    resultEl.textContent = pressedKey !== requiredDirection ? "Missed! (Wrong direction)" : "Missed! (Too late)";
     resultEl.style.color = "red";
     streak = 0;
+    attemptResult = "Miss";
   }
+
+  // Log reaction time
+  reactionTimes.push({ attempt: 13 - shotsLeft, result: attemptResult });
+  updateReactionTracker();
+
+  shotsLeft--;
   updateStats();
   setTimeout(() => {
     document.getElementById("direction").style.display = "none";
@@ -127,15 +132,28 @@ function handleKeyPress(event) {
 }
 
 function updateStats() {
+  document.getElementById("gameNumber").textContent = currentGame;
+  document.getElementById("shotsLeft").textContent = shotsLeft;
   document.getElementById("score").textContent = score;
   document.getElementById("streak").textContent = streak;
 }
 
-function endGame() {
-  document.removeEventListener("keydown", handleKeyPress);
-  document.getElementById("scenario").textContent = `Game Over! Seed ${playerSeed} - Score: ${score}, Longest Streak: ${streak}`;
+function updateReactionTracker() {
+  const reactionList = document.getElementById("reactionList");
+  reactionList.innerHTML = "";
+  reactionTimes.forEach(({ attempt, result }) => {
+    const li = document.createElement("li");
+    li.textContent = `Shot ${attempt}: ${result}`;
+    reactionList.appendChild(li);
+  });
 }
 
-// Event listener for start button
+function endGame(won = false) {
+  document.removeEventListener("keydown", handleKeyPress);
+  document.getElementById("scenario").textContent = won ?
+    `Champion! Seed ${playerSeed} - Score: ${score}, Longest Streak: ${streak}` :
+    `Game Over! Seed ${playerSeed} - Reached Game ${currentGame}, Score: ${score}`;
+}
+
 document.getElementById("startBtn").addEventListener("click", startGame);
 document.addEventListener("keydown", handleKeyPress);
