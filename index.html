@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buzzer Beater Blitz</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -12,7 +13,7 @@
       box-sizing: border-box;
     }
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
       min-height: 100vh;
       overflow-x: hidden;
@@ -23,8 +24,8 @@
       left: 0;
       width: 100%;
       height: 100vh;
-      background: linear-gradient(135deg, #ff6200, #e65100);
-      color: white;
+      background: linear-gradient(135deg, #ff6200, #e65100), url('https://www.transparenttextures.com/patterns/basketball.png');
+      color: #fff;
       text-align: center;
       padding: 20px;
       display: flex;
@@ -38,24 +39,43 @@
       opacity: 0;
       pointer-events: none;
     }
+    #landingPage .tagline {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
     #landingPage h1 {
       font-size: 3.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
-    #landingPage p {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
     #howToPlay {
-      font-size: 1.2rem;
       max-width: 600px;
       margin-bottom: 2rem;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.3);
       padding: 1rem;
       border-radius: 5px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 1.2rem;
     }
+    #howToPlay span {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #howToPlay span::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 0.5rem;
+      background-size: cover;
+    }
+    #howToPlay .tap::before { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'); }
+    #howToPlay .time::before { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'); }
+    #howToPlay .score::before { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>'); }
     #seedSelect {
       font-size: 1.2rem;
       padding: 0.75rem;
@@ -67,17 +87,17 @@
       cursor: pointer;
     }
     #startBtn {
-      font-size: 1.5rem;
-      padding: 1rem 2rem;
-      background: #000;
-      color: white;
+      font-size: 1.8rem;
+      padding: 1rem 2.5rem;
+      background: #ff6200;
+      color: #fff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       transition: background 0.3s ease, transform 0.2s ease;
     }
     #startBtn:hover {
-      background: #333;
+      background: #e65100;
       transform: scale(1.05);
     }
     #gameContainer {
@@ -150,6 +170,11 @@
       color: #ff6200;
       font-weight: 700;
       display: none;
+      animation: bounce 0.5s infinite alternate;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
     }
     #direction {
       font-size: 6rem;
@@ -190,7 +215,7 @@
       font-weight: 700;
       margin-top: 1rem;
     }
-    #resultPage {
+    #tutorialPage, #resultPage {
       display: none;
       position: fixed;
       top: 50%;
@@ -204,18 +229,23 @@
       width: 90%;
       max-width: 500px;
       z-index: 10;
+      animation: popIn 0.3s ease;
     }
-    #resultPage h2 {
+    @keyframes popIn {
+      from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    #tutorialPage h2, #resultPage h2 {
       font-size: 2rem;
       color: #ff6200;
       margin-bottom: 1rem;
     }
-    #resultStats {
+    #tutorialContent, #resultStats {
       font-size: 1.2rem;
       color: #333;
       margin-bottom: 2rem;
     }
-    #nextBtn, #exitBtn {
+    #playBtn, #skipBtn, #nextBtn, #exitBtn, #shareBtn {
       font-size: 1.2rem;
       padding: 0.75rem 1.5rem;
       margin: 0 0.5rem;
@@ -223,19 +253,20 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background 0.3s ease;
+      min-height: 48px;
     }
-    #nextBtn {
+    #playBtn, #nextBtn {
       background: #ff6200;
       color: #fff;
     }
-    #nextBtn:hover {
+    #playBtn:hover, #nextBtn:hover {
       background: #e65100;
     }
-    #exitBtn {
+    #skipBtn, #exitBtn, #shareBtn {
       background: #333;
       color: #fff;
     }
-    #exitBtn:hover {
+    #skipBtn:hover, #exitBtn:hover, #shareBtn:hover {
       background: #555;
     }
     @media (max-width: 768px) {
@@ -257,15 +288,23 @@
       #countdown, #direction {
         font-size: 4rem;
       }
+      #landingPage h1 {
+        font-size: 2.5rem;
+      }
+      #landingPage .tagline {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
   <div id="landingPage">
-    <h1>Welcome to Buzzer Beater Blitz!</h1>
-    <p>Test your clutch skills in a March Madness-inspired challenge.</p>
+    <div class="tagline">Test Your Reflexes in the Ultimate Buzzer Beater Challenge!</div>
+    <h1>Buzzer Beater Blitz</h1>
     <div id="howToPlay">
-      <strong>How to Play:</strong> Select your seed (1–16) and face off against an opponent in a 7-game tournament. Each game has a 40-minute clock and 12 shots. Press the arrow key matching the direction shown within the time limit to score. Beat your opponent in each round to become the champion!
+      <span class="tap">Tap to Shoot</span>
+      <span class="time">Beat the Buzzer!</span>
+      <span class="score">Score to Win</span>
     </div>
     <label for="seedSelect">Pick Your Seed (1 = Easy, 16 = Hard):</label>
     <select id="seedSelect">
@@ -286,7 +325,17 @@
       <option value="15">Seed 15</option>
       <option value="16">Seed 16</option>
     </select>
-    <button id="startBtn">Start Game</button>
+    <button id="startBtn">Start Shooting!</button>
+  </div>
+  <div id="tutorialPage">
+    <h2>How to Play</h2>
+    <div id="tutorialContent">
+      <p>1. Watch the countdown and get ready!</p>
+      <p>2. Press the arrow key matching the direction shown.</p>
+      <p>3. Score more points than your opponent to win each game!</p>
+    </div>
+    <button id="playBtn">Play Now</button>
+    <button id="skipBtn">Skip</button>
   </div>
   <div id="gameContainer">
     <div id="gameScreen">
@@ -309,6 +358,7 @@
       <h3>Reaction Times</h3>
       <ul id="reactionList"></ul>
       <div id="avgReaction">Avg: N/A</div>
+      <div id="highScore">High Score: <span id="highScoreValue">0</span></div>
     </div>
   </div>
   <div id="resultPage">
@@ -316,6 +366,7 @@
     <div id="resultStats"></div>
     <button id="nextBtn">Next Game</button>
     <button id="exitBtn">Exit</button>
+    <button id="shareBtn">Share Score</button>
   </div>
   <script src="game.js"></script>
 </body>
