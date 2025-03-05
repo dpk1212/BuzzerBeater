@@ -1,99 +1,166 @@
 body {
-    background-color: #e6f3ff; /* Light blue background */
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif; /* Modern sans-serif font */
     margin: 0;
     padding: 20px;
-    background-image: url('../images/background.jpg');
-    background-size: cover;
-    background-position: center;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: background-color 0.3s, color 0.3s; /* Smooth mode transition */
+}
+
+/* Light mode default */
+body.light-mode {
+    background-color: #f5f9ff; /* Very light blue */
+    color: #1a3d6d; /* Dark blue text */
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Dark mode */
+body.dark-mode {
+    background-color: #1a2b3d; /* Deep blue-black */
+    color: #e6f3ff; /* Light blue text */
+    background-image: url('../images/background-dark.jpg'); /* Optional dark background image */
+    background-size: cover;
+    background-position: center;
 }
 
 header {
     text-align: center;
-    color: #0066cc; /* Dark blue for headers */
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* Light mode overlay */
+    border-radius: 12px;
+    border: 2px solid #ffd700; /* Gold brutalist border */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.privacy-note {
-    color: #004d99;
-    font-size: 14px;
-    font-style: italic;
+body.dark-mode header {
+    background: rgba(26, 43, 61, 0.9); /* Dark mode overlay */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .vault-icon, .lock-icon {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     vertical-align: middle;
+    margin-left: 10px;
 }
 
 h1, h2 {
     color: #ffd700; /* Gold for headings, vault theme */
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    color: #0066cc;
+    margin: 10px 0;
+}
+
+.dark-mode-toggle {
+    background: none;
+    border: none;
+    color: #ffd700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+
+.dark-mode-toggle:hover {
+    color: #cca300;
 }
 
 nav {
     margin: 20px 0;
     display: flex;
-    gap: 10px;
+    gap: 15px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .btn {
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 16px;
     text-decoration: none;
+    transition: transform 0.2s, background-color 0.3s, color 0.3s;
+    border: 2px solid transparent; /* Brutalist-inspired border */
 }
 
 .btn:hover {
+    transform: scale(1.05); /* Subtle scale for micro-interaction */
+}
+
+.primary-btn {
+    background-color: #0066cc;
+    color: white;
+}
+
+.primary-btn:hover {
     background-color: #004d99;
 }
 
-.premium-btn {
-    background-color: #ffd700; /* Gold for premium button */
+.secondary-btn {
+    background-color: #e6f3ff;
     color: #0066cc;
+    border-color: #0066cc;
+}
+
+.secondary-btn:hover {
+    background-color: #b3d1ff;
+    color: #004d99;
+}
+
+.premium-btn {
+    background-color: #ffd700;
+    color: #0066cc;
+    border-color: #ffd700;
 }
 
 .premium-btn:hover {
     background-color: #cca300;
+    color: #004d99;
 }
 
 main {
     flex-grow: 1;
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
 }
 
 .form-container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    border: 2px solid #ffd700;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    border: 3px solid #ffd700; /* Bold brutalist border */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+body.dark-mode .form-container {
+    background: rgba(26, 43, 61, 0.95);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-bottom: 5px;
-    color: #0066cc;
-    font-weight: bold;
-}
-
-input, textarea, select {
-    padding: 10px;
-    border: 1px solid #0066cc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 100%;
+   
