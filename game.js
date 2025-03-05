@@ -13,6 +13,7 @@ let playerSeed;
 let opponentSeed;
 let reactionTimes = [];
 let clockInterval;
+let highScore = localStorage.getItem('highScore') || 0;
 
 const rounds = [
   "Round of 64", "Round of 32", "Sweet Sixteen", "Elite Eight", 
@@ -42,7 +43,7 @@ function getScenarios(seed, timeLeft) {
     .filter(s => timeLeft >= s.minTime)
     .map(scenario => ({
       ...scenario,
-      window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.3)), // Reduced penalty from 0.5 to 0.3
+      window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.3)),
       weight: scenario.points === 1 ? (1 - difficultyFactor) :
               scenario.points === 2 ? 1 :
               difficultyFactor
@@ -65,20 +66,25 @@ function startGame() {
   currentGame = 0;
 
   const landingPage = document.getElementById("landingPage");
-  const gameContainer = document.getElementById("gameContainer");
-
   landingPage.classList.add("hidden");
   setTimeout(() => {
     landingPage.style.display = "none";
-    gameContainer.style.display = "flex";
-    document.getElementById("reactionTracker").style.display = "block";
-    gameContainer.classList.add("visible");
+    document.getElementById("tutorialPage").style.display = "block";
   }, 500);
+}
+
+function beginGame() {
+  const gameContainer = document.getElementById("gameContainer");
+  document.getElementById("tutorialPage").style.display = "none";
+  gameContainer.style.display = "flex";
+  document.getElementById("reactionTracker").style.display = "block";
+  gameContainer.classList.add("visible");
 
   document.getElementById("gameRound").textContent = rounds[currentGame];
   document.getElementById("playerSeedDisplay").textContent = `Seed ${playerSeed}`;
   document.getElementById("opponentSeedDisplay").textContent = `Seed ${opponentSeed}`;
   document.getElementById("gameClock").textContent = formatTime(gameClock);
+  document.getElementById("highScoreValue").textContent = highScore;
   updateStats();
 
   clockInterval = setInterval(() => {
@@ -112,8 +118,8 @@ function nextShot() {
   }
 
   currentWindow = scenario.window;
-  requiredDirection = directions[Math.floor(Math.random() * directions.length)]; // Set direction early
-  let clock = Math.floor(Math.random() * 2) + 1; // 1-3 seconds
+  requiredDirection = directions[Math.floor(Math.random() * directions.length)];
+  let clock = Math.floor(Math.random() * 2) + 1;
   document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left!`;
   document.getElementById("countdown").style.display = "block";
   document.getElementById("countdown").textContent = clock;
@@ -146,7 +152,7 @@ function handleKeyPress(event) {
   const scenario = scenarios.find(s => s.text === currentScenarioText);
 
   let attemptResult;
-  if (pressedKey === requiredDirection && reactionTime <= currentWindow + 100) { // Added 100ms buffer
+  if (pressedKey === requiredDirection && reactionTime <= currentWindow + 100) {
     playerScore += scenario.points;
     streak++;
     resultEl.textContent = "Made it!";
@@ -200,6 +206,13 @@ function showResultPage(won) {
   clearInterval(clockInterval);
   document.removeEventListener("keydown", handleKeyPress);
 
+  if (playerScore > highScore) {
+    highScore = playerScore;
+    localStorage.setItem('highScore', highScore);
+    document.getElementById("highScoreValue").textContent = highScore;
+    if (won) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  }
+
   const made = reactionTimes.filter(r => r.result !== "Miss").length;
   const missed = 12 - made;
   const successfulTimes = reactionTimes
@@ -216,12 +229,15 @@ function showResultPage(won) {
     <p>Avg Reaction: ${avgTime === "N/A" ? "N/A" : avgTime + "ms"}</p>
     <p>Fastest: ${fastest === "N/A" ? "N/A" : fastest + "ms"}</p>
     <p>Slowest: ${slowest === "N/A" ? "N/A" : slowest + "ms"}</p>
+    <p>High Score: ${highScore}</p>
   `;
   document.getElementById("resultPage").style.display = "block";
   document.getElementById("nextBtn").style.display = won && currentGame < rounds.length - 1 ? "inline-block" : "none";
 }
 
 document.getElementById("startBtn").addEventListener("click", startGame);
+document.getElementById("playBtn").addEventListener("click", beginGame);
+document.getElementById("skipBtn").addEventListener("click", beginGame);
 document.getElementById("nextBtn").addEventListener("click", () => {
   document.getElementById("resultPage").style.display = "none";
   currentGame++;
@@ -247,5 +263,9 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 });
 document.getElementById("exitBtn").addEventListener("click", () => {
   window.location.reload();
+});
+document.getElementById("shareBtn").addEventListener("click", () => {
+  const text = `I scored ${playerScore} in Buzzer Beater Blitz! Can you beat my high score of ${highScore}? Play now!`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
 });
 document.addEventListener("keydown", handleKeyPress);
