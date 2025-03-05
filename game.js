@@ -28,12 +28,12 @@ const keyMap = {
 };
 
 const baseScenarios = [
-  { text: "Open layup", points: 1, baseWindow: 900, minTime: 20 * 60 },
-  { text: "Mid-range jumper", points: 2, baseWindow: 700, minTime: 20 * 60 },
-  { text: "Contested mid-range shot", points: 2, baseWindow: 700, minTime: 5 * 60 },
-  { text: "Quick three-pointer", points: 3, baseWindow: 500, minTime: 5 * 60 },
-  { text: "Deep three with time running out", points: 3, baseWindow: 500, minTime: 0 },
-  { text: "Buzzer-beater from downtown", points: 3, baseWindow: 500, minTime: 0 }
+  { text: "Open layup", points: 1, baseWindow: 1000, minTime: 20 * 60 },
+  { text: "Mid-range jumper", points: 2, baseWindow: 800, minTime: 20 * 60 },
+  { text: "Contested mid-range shot", points: 2, baseWindow: 800, minTime: 5 * 60 },
+  { text: "Quick three-pointer", points: 3, baseWindow: 600, minTime: 5 * 60 },
+  { text: "Deep three with time running out", points: 3, baseWindow: 600, minTime: 0 },
+  { text: "Buzzer-beater from downtown", points: 3, baseWindow: 600, minTime: 0 }
 ];
 
 function getScenarios(seed, timeLeft) {
@@ -42,7 +42,7 @@ function getScenarios(seed, timeLeft) {
     .filter(s => timeLeft >= s.minTime)
     .map(scenario => ({
       ...scenario,
-      window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.5)),
+      window: Math.round(scenario.baseWindow * (1 - difficultyFactor * 0.3)), // Reduced penalty from 0.5 to 0.3
       weight: scenario.points === 1 ? (1 - difficultyFactor) :
               scenario.points === 2 ? 1 :
               difficultyFactor
@@ -112,6 +112,7 @@ function nextShot() {
   }
 
   currentWindow = scenario.window;
+  requiredDirection = directions[Math.floor(Math.random() * directions.length)]; // Set direction early
   let clock = Math.floor(Math.random() * 2) + 1; // 1-3 seconds
   document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left!`;
   document.getElementById("countdown").style.display = "block";
@@ -126,7 +127,7 @@ function nextShot() {
     } else {
       clearInterval(countdown);
       document.getElementById("countdown").style.display = "none";
-      document.getElementById("direction").textContent = directions[Math.floor(Math.random() * directions.length)];
+      document.getElementById("direction").textContent = requiredDirection;
       document.getElementById("direction").style.display = "block";
       isDirectionShown = true;
       shotStartTime = Date.now();
@@ -145,7 +146,7 @@ function handleKeyPress(event) {
   const scenario = scenarios.find(s => s.text === currentScenarioText);
 
   let attemptResult;
-  if (pressedKey === requiredDirection && reactionTime <= currentWindow) {
+  if (pressedKey === requiredDirection && reactionTime <= currentWindow + 100) { // Added 100ms buffer
     playerScore += scenario.points;
     streak++;
     resultEl.textContent = "Made it!";
