@@ -18,7 +18,7 @@
       overflow-x: hidden;
     }
     #landingPage {
-      position: fixed; /* Ensures it fills the screen without extra space */
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -32,7 +32,7 @@
       align-items: center;
       justify-content: center;
       transition: opacity 0.5s ease;
-      z-index: 1; /* Keeps it above other content */
+      z-index: 1;
     }
     #landingPage.hidden {
       opacity: 0;
@@ -135,12 +135,21 @@
       margin: 2rem 0;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     #scenario {
       font-size: 1.8rem;
       font-weight: 700;
       color: #000;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    #countdown {
+      font-size: 6rem;
+      color: #ff6200;
+      font-weight: 700;
+      display: none;
     }
     #direction {
       font-size: 6rem;
@@ -149,7 +158,7 @@
     }
     #result {
       font-size: 1.5rem;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       font-weight: 700;
     }
     #reactionTracker {
@@ -245,7 +254,7 @@
       #scoreboard .scores span {
         font-size: 1.5rem;
       }
-      #direction {
+      #countdown, #direction {
         font-size: 4rem;
       }
     }
@@ -291,6 +300,7 @@
       </div>
       <div id="playBox">
         <div id="scenario">Get ready...</div>
+        <div id="countdown"></div>
         <div id="direction"></div>
         <div id="result"></div>
       </div>
