@@ -1,6 +1,7 @@
 let currentGame = 1;
 let shotsLeft = 12;
-let score = 0;
+let playerScore = 0;
+let opponentScore = 0;
 let streak = 0;
 let isDirectionShown = false;
 let shotStartTime;
@@ -41,8 +42,7 @@ function startGame() {
 
   document.getElementById("landingPage").style.display = "none";
   document.getElementById("gameScreen").style.display = "block";
-  document.getElementById("reactionTracker").style.display = "block";
-  document.getElementById("seedDisplay").textContent = playerSeed;
+  document.getElementById("reactionTracker").style.display = "block"; // Show tracker now
 
   updateStats();
   nextShot(scenarios);
@@ -50,14 +50,21 @@ function startGame() {
 
 function nextShot(scenarios) {
   if (shotsLeft <= 0) {
-    if (currentGame < 6) {
-      currentGame++;
-      shotsLeft = 12;
-      reactionTimes = []; // Reset reaction times for new game
-      document.getElementById("reactionList").innerHTML = "";
-      updateStats();
+    if (playerScore > opponentScore) {
+      if (currentGame < 6) {
+        currentGame++;
+        shotsLeft = 12;
+        playerScore = 0;
+        opponentScore = 0;
+        reactionTimes = [];
+        document.getElementById("reactionList").innerHTML = "";
+        updateStats();
+      } else {
+        endGame(true); // Win tournament
+        return;
+      }
     } else {
-      endGame(true); // Win condition
+      endGame(false); // Lose game
       return;
     }
   }
@@ -74,7 +81,7 @@ function nextShot(scenarios) {
   }
 
   currentWindow = scenario.window;
-  let clock = Math.floor(Math.random() * 4) + 3;
+  let clock = Math.floor(Math.random() * 2) + 1; // 1-3s countdown
   document.getElementById("scenario").textContent = `${scenario.text} ${clock}...`;
   isDirectionShown = false;
   hasPressed = false;
@@ -106,19 +113,19 @@ function handleKeyPress(event) {
 
   let attemptResult;
   if (pressedKey === requiredDirection && reactionTime <= currentWindow) {
-    score += scenario.points;
+    playerScore += scenario.points;
     streak++;
     resultEl.textContent = "Made it!";
     resultEl.style.color = "green";
     attemptResult = `${reactionTime}ms`;
   } else {
+    opponentScore += Math.floor(Math.random() * 2) + 1; // Opponent scores 1 or 2
     resultEl.textContent = pressedKey !== requiredDirection ? "Missed! (Wrong direction)" : "Missed! (Too late)";
     resultEl.style.color = "red";
     streak = 0;
     attemptResult = "Miss";
   }
 
-  // Log reaction time
   reactionTimes.push({ attempt: 13 - shotsLeft, result: attemptResult });
   updateReactionTracker();
 
@@ -134,7 +141,8 @@ function handleKeyPress(event) {
 function updateStats() {
   document.getElementById("gameNumber").textContent = currentGame;
   document.getElementById("shotsLeft").textContent = shotsLeft;
-  document.getElementById("score").textContent = score;
+  document.getElementById("playerScore").textContent = playerScore;
+  document.getElementById("opponentScore").textContent = opponentScore;
   document.getElementById("streak").textContent = streak;
 }
 
@@ -151,8 +159,8 @@ function updateReactionTracker() {
 function endGame(won = false) {
   document.removeEventListener("keydown", handleKeyPress);
   document.getElementById("scenario").textContent = won ?
-    `Champion! Seed ${playerSeed} - Score: ${score}, Longest Streak: ${streak}` :
-    `Game Over! Seed ${playerSeed} - Reached Game ${currentGame}, Score: ${score}`;
+    `Champion! Seed ${playerSeed} - Final Score: ${playerScore}-${opponentScore}, Longest Streak: ${streak}` :
+    `Game Over! Seed ${playerSeed} - Lost Game ${currentGame} (${playerScore}-${opponentScore})`;
 }
 
 document.getElementById("startBtn").addEventListener("click", startGame);
