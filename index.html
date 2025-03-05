@@ -13,8 +13,8 @@
     #timer, #score, #streak {
       font-size: 24px;
       margin: 10px;
+      display: none; /* Hidden until game starts */
     }
-    
     #scenario {
       font-size: 28px;
       font-weight: bold;
@@ -29,6 +29,12 @@
       font-size: 24px;
       margin: 20px;
     }
+    #startBtn {
+      font-size: 24px;
+      padding: 10px 20px;
+      margin-top: 50px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -37,8 +43,8 @@
   <div>Streak: <span id="streak">0</span></div>
   <div id="scenario">Get ready...</div>
   <div id="direction"></div>
-  <button id="startBtn">Start Game</button>
   <div id="result"></div>
+  <button id="startBtn">Start Game</button>
   <script src="game.js"></script>
 </body>
 </html>
