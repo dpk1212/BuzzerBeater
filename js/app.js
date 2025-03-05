@@ -256,6 +256,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    // 🏆 Header Shrinking Effect on Scroll
+window.addEventListener('scroll', function() {
+    if (window.scrollY > 50) {
+        document.querySelector('header').classList.add('scrolled');
+    } else {
+        document.querySelector('header').classList.remove('scrolled');
+    }
+});
+
+// 🌀 Smooth Section Transitions
+document.addEventListener("DOMContentLoaded", function() {
+    const sections = document.querySelectorAll("section");
+
+    sections.forEach(section => {
+        if (!section.classList.contains("active-section")) {
+            section.classList.add("hidden-section");
+        }
+    });
+
+    function showSection(section) {
+        sections.forEach(s => s.classList.add("hidden-section"));
+        section.classList.remove("hidden-section");
+        section.classList.add("active-section");
+    }
+
+    document.getElementById("nav-home").addEventListener("click", function() {
+        showSection(document.getElementById("home-section"));
+    });
+
+    document.getElementById("nav-vault").addEventListener("click", function() {
+        showSection(document.getElementById("vault-section"));
+    });
+
+    document.getElementById("nav-premium").addEventListener("click", function() {
+        showSection(document.getElementById("premium-section"));
+    });
+});
+
     
     // Function to generate message with Claude API via Digital Ocean
     async function generateMessageWithClaude(name, traits, insecurities) {
