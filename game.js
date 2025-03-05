@@ -112,19 +112,21 @@ function nextShot() {
   }
 
   currentWindow = scenario.window;
-  let clock = Math.floor(Math.random() * 2) + 1;
-  document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left! ${clock}...`;
+  let clock = Math.floor(Math.random() * 2) + 1; // 1-3 seconds
+  document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left!`;
+  document.getElementById("countdown").style.display = "block";
+  document.getElementById("countdown").textContent = clock;
   isDirectionShown = false;
   hasPressed = false;
+
   const countdown = setInterval(() => {
     clock--;
     if (clock > 0) {
-      document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left! ${clock}...`;
+      document.getElementById("countdown").textContent = clock;
     } else {
       clearInterval(countdown);
-      document.getElementById("scenario").textContent = `${scenario.text} with ${formatTime(gameClock)} left!`;
-      requiredDirection = directions[Math.floor(Math.random() * directions.length)];
-      document.getElementById("direction").textContent = requiredDirection;
+      document.getElementById("countdown").style.display = "none";
+      document.getElementById("direction").textContent = directions[Math.floor(Math.random() * directions.length)];
       document.getElementById("direction").style.display = "block";
       isDirectionShown = true;
       shotStartTime = Date.now();
