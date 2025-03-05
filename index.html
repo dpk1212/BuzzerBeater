@@ -9,8 +9,7 @@
     <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
 </head>
 <body>
-
-    <header>
+    <header class="animated-header">
         <div class="container">
             <div class="logo">
                 <img src="images/vault-icon.png" alt="Vault Icon" class="vault-icon">
@@ -27,48 +26,45 @@
     </header>
 
     <main>
-        <section id="home-section" class="active-section fade-in">
-            <div class="hero">
-                <h2>Unlock Positivity with <span class="highlight">The Message Vault</span></h2>
-                <p>Generate uplifting messages and save them in your personal vault.</p>
-            </div>
-
-            <div class="message-generator card">
-                <form id="message-form">
-                    <div class="form-group">
-                        <label for="name">Your Name or Friend's Name</label>
-                        <input type="text" id="name" placeholder="e.g., Sarah" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="traits">Optional Traits or Interests</label>
-                        <input type="text" id="traits" placeholder="e.g., loves hiking, creative">
-                    </div>
-                    <div class="form-group">
-                        <label for="insecurities">Optional Insecurities</label>
-                        <input type="text" id="insecurities" placeholder="e.g., public speaking">
-                    </div>
-                    <button type="submit" id="generate-btn" class="glow-btn">Generate Message</button>
-                </form>
-            </div>
-
-            <div class="message-display hidden card" id="message-display">
-                <div class="message-card fade-in">
-                    <p id="generated-message"></p>
-                    <div class="message-actions">
-                        <button id="regenerate-btn"><i class="fas fa-redo"></i> Generate Another</button>
-                        <button id="save-btn"><i class="fas fa-heart"></i> Save</button>
-                        <button id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
-                    </div>
+        <div class="container">
+            <section id="home-section" class="active-section fade-in-section">
+                <div class="hero slide-up">
+                    <h2>Unlock Positivity with The Message Vault</h2>
+                    <p>Generate uplifting messages for yourself or friends. Save your favorites in your personal vault.</p>
                 </div>
-            </div>
-        </section>
+
+                <div class="message-generator pop-in">
+                    <form id="message-form">
+                        <div class="form-group">
+                            <label for="name">Your Name or Friend's Name</label>
+                            <input type="text" id="name" placeholder="e.g., Sarah" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="traits">Optional Traits or Interests (comma separated)</label>
+                            <input type="text" id="traits" placeholder="e.g., loves hiking, creative">
+                        </div>
+                        <div class="form-group">
+                            <label for="insecurities">Optional Insecurities (We'll address them positively)</label>
+                            <input type="text" id="insecurities" placeholder="e.g., public speaking">
+                        </div>
+                        <button type="submit" id="generate-btn" class="pulse">Generate Message</button>
+                    </form>
+                </div>
+            </section>
+        </div>
     </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2024 The Message Vault. All rights reserved.</p>
+        <div class="container fade-in">
+            <p>&copy; 2023 The Message Vault. All rights reserved.</p>
         </div>
     </footer>
+
+    <script src="js/message-generator.js"></script>
+    <script src="js/vault.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
 
     <script src="js/app.js"></script>
 </body>
