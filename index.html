@@ -209,7 +209,7 @@
     #reactionList li {
       margin-bottom: 0.5rem;
     }
-    #avgReaction {
+    #avgReaction, #highScore {
       font-size: 1.2rem;
       color: #ff6200;
       font-weight: 700;
@@ -227,7 +227,7 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       text-align: center;
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       z-index: 10;
       animation: popIn 0.3s ease;
     }
@@ -243,7 +243,24 @@
     #tutorialContent, #resultStats {
       font-size: 1.2rem;
       color: #333;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
+    }
+    #leaderboard {
+      font-size: 1rem;
+      color: #333;
+      margin-top: 1rem;
+    }
+    #leaderboard table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #leaderboard th, #leaderboard td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+    }
+    #leaderboard th {
+      font-weight: 700;
+      color: #ff6200;
     }
     #playBtn, #skipBtn, #nextBtn, #exitBtn, #shareBtn {
       font-size: 1.2rem;
@@ -364,10 +381,23 @@
   <div id="resultPage">
     <h2>Game Result</h2>
     <div id="resultStats"></div>
+    <div id="leaderboard">
+      <h3>Leaderboard</h3>
+      <table id="leaderboardTable">
+        <thead>
+          <tr><th>Rank</th><th>Seed</th><th>Score</th><th>Date</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
     <button id="nextBtn">Next Game</button>
     <button id="exitBtn">Exit</button>
     <button id="shareBtn">Share Score</button>
   </div>
+  <audio id="shotMadeSound" src="https://www.soundjay.com/buttons/swish-01.mp3" preload="auto"></audio>
+  <audio id="shotMissedSound" src="https://www.soundjay.com/buttons/thud-01.mp3" preload="auto"></audio>
+  <audio id="countdownStartSound" src="https://www.soundjay.com/buttons/beep-01a.mp3" preload="auto"></audio>
+  <audio id="gameWinSound" src="https://www.soundjay.com/crowd/crowd-cheer-01.mp3" preload="auto"></audio>
   <script src="game.js"></script>
 </body>
 </html>
